@@ -1,7 +1,8 @@
 import Customer from '@modules/customers/infra/typeorm/entities/Customer';
 
 interface IProduct {
-  product_id: string;
+  // product_id: string;
+  id: string;
   price: number;
   quantity: number;
 }

@@ -36,7 +36,7 @@ Essa será uma aplicação que deve permitir a criação de clientes, produtos e
 
 [x] **should not be able to create an order with a invalid customer:** Para que esse teste passe, sua aplicação não deve permitir a criação de um novo pedido com um cliente que não existe no banco de dados, retornando um erro.
 
-[] **should not be able to create an order with invalid products:** Para que esse teste passe, sua aplicação não deve permitir a criação de um novo pedido com um produtos que não existem no banco de dados, retornando um erro caso um ou mais dos produtos enviados não exista no banco de dados.
+[x] **should not be able to create an order with invalid products:** Para que esse teste passe, sua aplicação não deve permitir a criação de um novo pedido com um produtos que não existem no banco de dados, retornando um erro caso um ou mais dos produtos enviados não exista no banco de dados.
 
 [] **should not be able to create an order with products with insufficient quantities:** Para que esse teste passe, sua aplicação não deve permitir a criação de um novo pedido com um produtos que não possuem quantidade disponível, retornando um erro caso um ou mais dos produtos enviados não possua a quantidade necessária.
 
