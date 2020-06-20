@@ -19,9 +19,10 @@ class OrdersRepository implements IOrdersRepository {
     const order = await this.ormRepository.save({ customer });
 
     const orderProducts = products.map(product => ({
-      ...product,
-      product_id: product.product_id,
+      product: { id: product.product_id },
+      order: { id: order.id },
       order_id: order.id,
+      ...product,
     }));
 
     const orderProductsSave = await this.ormOrdersProductsRepository.save(
@@ -29,13 +30,14 @@ class OrdersRepository implements IOrdersRepository {
     );
 
     order.order_products = orderProductsSave;
-    await this.ormRepository.save(order);
 
-    return order;
+    return this.ormRepository.save(order);
   }
 
   public async findById(id: string): Promise<Order | undefined> {
-    const order = await this.ormRepository.findOne({ where: { id } });
+    const order = await this.ormRepository.findOne(id, {
+      relations: ['customer', 'order_products'],
+    });
     return order;
   }
 }
