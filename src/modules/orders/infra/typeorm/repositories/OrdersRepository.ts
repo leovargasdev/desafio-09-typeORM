@@ -20,7 +20,7 @@ class OrdersRepository implements IOrdersRepository {
 
     const orderProducts = products.map(product => ({
       ...product,
-      product_id: product.id,
+      product_id: product.product_id,
       order_id: order.id,
     }));
 

@@ -38,24 +38,32 @@ class CreateOrderService {
     if (!productsExist.length)
       throw new AppError('Some any list product not exist');
 
-    const produtsUpdate = productsExist.map(product => {
+    const productsOrder: any = [];
+
+    const productsUpdate = productsExist.map(product => {
       const { id, price, quantity } = product;
 
       const pRequest = products.filter(p => p.id === id)[0];
       if (pRequest.quantity > quantity)
         throw new AppError('This quantity exceeded the amount of product');
 
+      productsOrder.push({
+        product_id: id,
+        price,
+        quantity: pRequest.quantity,
+      });
+
       return {
         id,
-        price,
         quantity: quantity - pRequest.quantity,
       };
     });
-    await this.productsRepository.updateQuantity(produtsUpdate);
+
+    await this.productsRepository.updateQuantity(productsUpdate);
 
     const order = await this.ordersRepository.create({
       customer: customerExist,
-      products: produtsUpdate,
+      products: productsOrder,
     });
 
     return order;
