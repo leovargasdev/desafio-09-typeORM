@@ -33,22 +33,29 @@ class CreateOrderService {
   public async execute({ customer_id, products }: IRequest): Promise<Order> {
     const customerExist = await this.customersRepository.findById(customer_id);
     if (!customerExist) throw new AppError('Customer not exist');
-
+    // Lembrar de colocar isso dentro do map
     const productsExist = await this.productsRepository.findAllById(products);
     if (!productsExist.length)
       throw new AppError('Some any list product not exist');
 
-    // const productsAA = productsExist.map(product => {
-    //   const id = Number(product.id);
-    //   if (product.quantity < products[id].quantity)
-    //     throw new AppError('Product exed limit');
+    const produtsUpdate = productsExist.map(product => {
+      const { id, price, quantity } = product;
 
-    //   return { ...products[id]., price: product.price };
-    // });
+      const pRequest = products.filter(p => p.id === id)[0];
+      if (pRequest.quantity > quantity)
+        throw new AppError('This quantity exceeded the amount of product');
+
+      return {
+        id,
+        price,
+        quantity: quantity - pRequest.quantity,
+      };
+    });
+    await this.productsRepository.updateQuantity(produtsUpdate);
 
     const order = await this.ordersRepository.create({
       customer: customerExist,
-      products: productsExist,
+      products: produtsUpdate,
     });
 
     return order;
