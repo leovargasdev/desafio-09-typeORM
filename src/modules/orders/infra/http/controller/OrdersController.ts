@@ -4,16 +4,26 @@ import { container } from 'tsyringe';
 
 import CreateOrderService from '@modules/orders/services/CreateOrderService';
 import FindOrderService from '@modules/orders/services/FindOrderService';
+import AppError from '@shared/errors/AppError';
 
 export default class OrdersController {
   public async show(request: Request, response: Response): Promise<Response> {
     const findOrder = container.resolve(FindOrderService);
 
     const { id } = request.params;
-    console.log(id);
-    const order = await findOrder.execute({ id });
 
-    return response.json(order);
+    const order = await findOrder.execute({ id });
+    if (!order) {
+      throw new AppError('Order not found');
+    }
+    return response.status(200).json({
+      ...order,
+      order_products: order.order_products.map(p => ({
+        ...p,
+        quantity: Number(p.quantity),
+        price: Number(p.price).toFixed(2),
+      })),
+    });
   }
 
   public async create(request: Request, response: Response): Promise<Response> {
